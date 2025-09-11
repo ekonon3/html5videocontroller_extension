@@ -3,7 +3,7 @@
     "name": "HTML5 Video Controller",
     "description": "Rewind, fast forward, adjust playback speed",
     "version": "1.0",
-	"permissions": ["scripting", "activeTab"],
+	"permissions": ["scripting", "activeTab", "storage"],
 	"background": {
       "service_worker": "background.js"
 	},

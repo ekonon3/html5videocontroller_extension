@@ -12,6 +12,20 @@ h4 {
 	letter-spacing: 2px;
 }
 
+label {
+	color: white;
+}
+
+select {
+	background: #696969;
+	field-sizing: content;
+	text-align: center;
+	max-width: 65px;
+	min-width: 40px;
+	color: white;
+	border-radius: 5px;
+}
+
 .center {
     width: auto;
     padding: 10px;
@@ -31,6 +45,17 @@ h4 {
 	justify-content: center;
 	align-items: center;
 	height: auto;
+}
+
+.input-container {
+	text-align: center;
+	height: auto;
+	padding: 5px;
+	width: 100px;
+	background: transparent;
+	color: white;
+	align-items: center;
+	border-radius: 8px;
 }
 
 .btn {

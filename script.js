@@ -1,5 +1,5 @@
-const defaultTime = 15;
-const defaultSpeedRate = .25;
+let timeConfig = 15;
+let speedRateConfig = .25;
 
 console.log('Loading HTML5 Video Controller extension');
 const videoPlayerCollection = document.getElementsByTagName('video');
@@ -12,6 +12,9 @@ function rewind(videoPlayer, time)
 
 function fastForward(videoPlayer, time)
 {
+	console.log(videoPlayer.currentTime);
+	console.log(time);
+	console.log(videoPlayer.currentTime += time);
 	videoPlayer.currentTime += time;
 	console.log('Play position: ' + videoPlayer.currentTime);
 }
@@ -40,8 +43,6 @@ function setNormalPlaybackSpeed(videoPlayer)
 }
 
 chrome.runtime.onMessage.addListener((msg) => {
-	if (msg?.type !== "command" && msg?.type !== "popup-command") return;
-	
 	if (videoPlayerCollection.length < 1) {
 		console.log("HTML5 Video Controller extension: No videos found");
 		return;
@@ -56,6 +57,9 @@ chrome.runtime.onMessage.addListener((msg) => {
 		case "popup-command":
 			command = msg.button;
 			break;
+		case "change-increment":
+			timeConfig = parseInt(msg.value);
+			return;
 		default:
 			console.log("Invalid command");
 			return;
@@ -65,13 +69,13 @@ chrome.runtime.onMessage.addListener((msg) => {
 		case "fastFwdBtn":
 			for (v of videoPlayerCollection)
 			{
-				fastForward(v, defaultTime);
+				fastForward(v, timeConfig);
 			}
 			break;
 		case "rewindBtn":
 			for (v of videoPlayerCollection)
 			{
-				rewind(v, defaultTime);
+				rewind(v, timeConfig);
 			}
 			break;
 		case "goToEndBtn":
@@ -83,13 +87,13 @@ chrome.runtime.onMessage.addListener((msg) => {
 		case "fasterBtn":
 			for (v of videoPlayerCollection)
 			{
-				increasePlaybackSpeed(v, defaultSpeedRate);
+				increasePlaybackSpeed(v, speedRateConfig);
 			}
 			break;
 		case "slowerBtn":
 			for (v of videoPlayerCollection)
 			{
-				decreasePlaybackSpeed(v, defaultSpeedRate);
+				decreasePlaybackSpeed(v, speedRateConfig);
 			}
 			break;
 		case "normalSpeedBtn":

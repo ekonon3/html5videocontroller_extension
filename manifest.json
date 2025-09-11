@@ -1,0 +1,49 @@
+{
+    "manifest_version": 3,
+    "name": "HTML5 Video Controller",
+    "description": "Rewind, fast forward, adjust playback speed",
+    "version": "1.0",
+	"permissions": ["scripting", "activeTab"],
+	"background": {
+      "service_worker": "background.js"
+	},
+	"content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["script.js"],
+      "run_at": "document_idle"
+    }],
+    "action": {
+        "default_title": "HTML5 Video Controller",
+        "default_popup": "index.html",
+		"default_icon": {
+		  "16": "images/icon16.png",
+		  "32": "images/icon32.png"
+		}
+	},
+	"commands": {
+		"fastFwdBtn": {
+			"description" : "Fast forward",
+			"suggested_key": {"default": "Alt+Shift+L"}
+		},
+		"rewindBtn": {
+			"description" : "Rewind",
+			"suggested_key": {"default": "Alt+Shift+K"}
+		},
+		"fasterBtn": {
+			"description" : "Increase playback speed",
+			"suggested_key": {"default": "Alt+Shift+Period"}
+		},
+		"slowerBtn": {
+			"description" : "Decrease playback speed",
+			"suggested_key": {"default": "Alt+Shift+Comma"}
+		}
+    },
+	"icons": {
+		"16": "images/icon16.png",
+		"32": "images/icon32.png",
+		"48": "images/icon48.png",
+		"128": "images/icon128.png"
+	},
+    "devtools_page": "index.html"
+}

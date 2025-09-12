@@ -11,7 +11,10 @@
 		<h4 class="center">html5 video controller</h4>
 	</div>
 	<div class="container">
-		<button class="btn" id="rewindBtn">rewind</button>
+		<button class="btn smaller play" id="playBtn">&#x23F5;&#x23F8;</button>
+	</div>
+	<div class="container">
+		<button class="btn larger" id="rewindBtn">&larr; rewind</button>
 		<div class="input-container">
 			<select name="increment" id="incr"/>
 			  <option value="5">5</option>
@@ -25,18 +28,20 @@
 			</select>
 			<label>sec</label>
 		</div>
-		<button class="btn" id="fastFwdBtn">fast forward</button>
+		<button class="btn larger" id="fastFwdBtn">fast forward &rarr;</button>
 	</div>
 	<div class="container">
-		<button class="btn" id="goToEndBtn">go to end</button>
+		<button class="btn smaller" id="goToStartBtn">go to start</button>
+		<button class="btn smaller" id="goToEndBtn">go to end</button>
 	</div>
 	<br>
 	<div class="container">
-		<button class="btn" id="slowerBtn">playback speed -</button>
-		<button class="btn" id="fasterBtn">playback speed +</button>
+		<button class="btn larger" id="slowerBtn">&ShortDownArrow; playback speed</button>
+		<div class="speed" id="playback-speed">1x</div>
+		<button class="btn larger" id="fasterBtn">&ShortUpArrow; playback speed</button>
 	</div>
 	<div class="container">
-		<button class="btn" id="normalSpeedBtn">normal speed</button>
+		<button class="btn larger" id="normalSpeedBtn">normal speed</button>
 	</div>
 	<script defer src="popup.js"></script>
 </body>

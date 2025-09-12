@@ -38,7 +38,8 @@ function goToStart(videoPlayer)
 
 function goToEnd(videoPlayer)
 {
-	videoPlayer.currentTime = videoPlayer.duration;
+	//videoPlayer.currentTime = videoPlayer.duration;
+	videoPlayer.currentTime += 9999;
 	console.log('Play position: ' + videoPlayer.currentTime);
 }
 
@@ -63,6 +64,11 @@ function setNormalPlaybackSpeed(videoPlayer)
 	videoPlayer.playbackRate = 1;
 	playbackSpeed = videoPlayer.playbackRate;
 	sendPlaybackRate();
+}
+
+function getPlaybackRate(videoPlayer)
+{
+	playbackSpeed = videoPlayer.playbackRate;
 }
 
 function sendPlaybackRate()
@@ -90,6 +96,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			timeConfig = parseInt(msg.value);
 			return;
 		case "get-playbackrate":
+		/*
+			for (v of videoPlayerCollection)
+			{
+				getPlaybackRate(v);
+			}
+		*/
 			sendPlaybackRate();
 			return;
 		default:

@@ -14,15 +14,8 @@ function playPause(videoPlayer) {
 	}
 }
 
-function rewind(videoPlayer, time) {
-	videoPlayer.currentTime -= time;
-	console.log('Play position: ' + videoPlayer.currentTime);
-}
 
-function fastForward(videoPlayer, time) {
-	console.log(videoPlayer.currentTime);
-	console.log(time);
-	console.log(videoPlayer.currentTime += time);
+function seek(videoPlayer, time) {
 	videoPlayer.currentTime += time;
 	console.log('Play position: ' + videoPlayer.currentTime);
 }
@@ -38,29 +31,15 @@ function goToEnd(videoPlayer) {
 	console.log('Play position: ' + videoPlayer.currentTime);
 }
 
-function increasePlaybackSpeed(videoPlayer, speed) {
-	videoPlayer.playbackRate += speed;
+function adjustPlaybackSpeed(videoPlayer, speed) {
+	if (speed == "1x") {
+		videoPlayer.playbackRate = 1;
+	} else {
+		videoPlayer.playbackRate += speed;
+	}
 	console.log('Playback speed: ' + videoPlayer.playbackRate + 'x');
 	playbackSpeed = videoPlayer.playbackRate;
 	sendPlaybackRate();
-}	
-
-function decreasePlaybackSpeed(videoPlayer, speed) {
-	videoPlayer.playbackRate -= speed;
-	console.log('Playback speed: ' + videoPlayer.playbackRate + 'x');
-	playbackSpeed = videoPlayer.playbackRate;
-	sendPlaybackRate();
-}
-
-function setNormalPlaybackSpeed(videoPlayer) {
-	videoPlayer.playbackRate = 1;
-	console.log('Playback speed: ' + videoPlayer.playbackRate + 'x');
-	playbackSpeed = videoPlayer.playbackRate;
-	sendPlaybackRate();
-}
-
-function getPlaybackRate(videoPlayer) {
-	playbackSpeed = videoPlayer.playbackRate;
 }
 
 function sendPlaybackRate() {
@@ -123,10 +102,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			executeFunction(playPause);
 			break;
 		case "fastFwdBtn":
-			executeFunction(fastForward, timeConfig);
+			executeFunction(seek, timeConfig);
 			break;
 		case "rewindBtn":
-			executeFunction(rewind, timeConfig);
+			executeFunction(seek, -timeConfig);
 			break;
 		case "goToStartBtn":
 			executeFunction(goToStart);
@@ -135,13 +114,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			executeFunction(goToEnd);
 			break;
 		case "fasterBtn":
-			executeFunction(increasePlaybackSpeed, speedRateConfig);
+			executeFunction(adjustPlaybackSpeed, speedRateConfig);
 			break;
 		case "slowerBtn":
-			executeFunction(decreasePlaybackSpeed, speedRateConfig);
+			executeFunction(adjustPlaybackSpeed, -speedRateConfig);
 			break;
 		case "normalSpeedBtn":
-			executeFunction(setNormalPlaybackSpeed);
+			executeFunction(adjustPlaybackSpeed, "1x");
 			break;
 		case "togglePiPBtn":
 			executeFunction(togglePictureInPicture)

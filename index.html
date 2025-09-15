@@ -10,10 +10,10 @@
 	<div class="header">
 		<h4 class="center">html5 video controller</h4>
 	</div>
-	<div class="container">
+	<div class="container center">
 		<button class="btn smaller play" id="playBtn">&#x23F5;&#x23F8;</button>
 	</div>
-	<div class="container">
+	<div class="container center">
 		<button class="btn larger" id="rewindBtn">&larr; rewind</button>
 		<div class="input-container">
 			<select name="increment" id="incr"/>
@@ -30,18 +30,21 @@
 		</div>
 		<button class="btn larger" id="fastFwdBtn">fast forward &rarr;</button>
 	</div>
-	<div class="container">
+	<div class="container center">
 		<button class="btn smaller" id="goToStartBtn">go to start</button>
 		<button class="btn smaller" id="goToEndBtn">go to end</button>
 	</div>
 	<br>
-	<div class="container">
+	<div class="container center">
 		<button class="btn larger" id="slowerBtn">&ShortDownArrow; playback speed</button>
 		<div class="speed" id="playback-speed">1x</div>
 		<button class="btn larger" id="fasterBtn">&ShortUpArrow; playback speed</button>
 	</div>
-	<div class="container">
+	<div class="container center">
 		<button class="btn larger" id="normalSpeedBtn">normal speed</button>
+	</div>
+	<div class="container right">
+		<button class="btn smallest right" id="togglePiPBtn">&#x25F2; PiP</button>
 	</div>
 	<script defer src="popup.js"></script>
 </body>

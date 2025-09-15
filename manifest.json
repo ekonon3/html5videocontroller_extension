@@ -42,6 +42,9 @@
 		"normalSpeedBtn": {
 			"description" : "Normal playback speed"
 		},
+		"toggleMuteBtn": {
+			"description" : "Toggle mute"
+		},
 		"toggleFullScreenBtn": {
 			"description" : "Toggle full screen"
 		},

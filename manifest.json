@@ -24,10 +24,10 @@
 	"commands": {
 		"_execute_action": {
 			"suggested_key": {
-				"windows": "Alt+Shift+O",
-				"mac": "Alt+Shift+O",
-				"chromeos": "Alt+Shift+O",
-				"linux": "Alt+Shift+O"
+				"windows": "Alt+Shift+P",
+				"mac": "Alt+Shift+P",
+				"chromeos": "Alt+Shift+P",
+				"linux": "Alt+Shift+P"
 			}
 		},
 		"playBtn": {

@@ -83,6 +83,14 @@ function toggleFullScreen(videoPlayer) {
   }
 }
 
+function executeFunction(callback, ...args) {
+	for (v of videoPlayerCollection) {
+		if (v.duration > 0) {
+			callback(v, ...args);
+		}
+	}
+}
+
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (videoPlayerCollection.length < 1) {
@@ -103,12 +111,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			timeConfig = parseInt(msg.value);
 			return;
 		case "get-playbackrate":
-			/*
-			for (v of videoPlayerCollection)
-			{
-				getPlaybackRate(v);
-			}
-			*/	
 			sendPlaybackRate();
 			return;
 		default:
@@ -118,54 +120,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 	switch(command) {
 		case "playBtn":
-			for (v of videoPlayerCollection) {
-				playPause(v);
-			}
+			executeFunction(playPause);
 			break;
 		case "fastFwdBtn":
-			for (v of videoPlayerCollection) {
-				fastForward(v, timeConfig);
-			}
+			executeFunction(fastForward, timeConfig);
 			break;
 		case "rewindBtn":
-			for (v of videoPlayerCollection) {
-				rewind(v, timeConfig);
-			}
+			executeFunction(rewind, timeConfig);
 			break;
 		case "goToStartBtn":
-			for (v of videoPlayerCollection) {
-				goToStart(v);
-			}
+			executeFunction(goToStart);
 			break;
 		case "goToEndBtn":
-			for (v of videoPlayerCollection) {
-				goToEnd(v);
-			}
+			executeFunction(goToEnd);
 			break;
 		case "fasterBtn":
-			for (v of videoPlayerCollection) {
-				increasePlaybackSpeed(v, speedRateConfig);
-			}
+			executeFunction(increasePlaybackSpeed, speedRateConfig);
 			break;
 		case "slowerBtn":
-			for (v of videoPlayerCollection) {
-				decreasePlaybackSpeed(v, speedRateConfig);
-			}
+			executeFunction(decreasePlaybackSpeed, speedRateConfig);
 			break;
 		case "normalSpeedBtn":
-			for (v of videoPlayerCollection) {
-				setNormalPlaybackSpeed(v);
-			}
+			executeFunction(setNormalPlaybackSpeed);
 			break;
 		case "togglePiPBtn":
-			for (v of videoPlayerCollection) {
-				togglePictureInPicture(v);
-			}
+			executeFunction(togglePictureInPicture)
 			break;
 		case "toggleFullScreenBtn":
-			for (v of videoPlayerCollection) {
-				toggleFullScreen(v);
-			}
+			executeFunction(toggleFullScreen)
 			break;
 		default:
 			console.log("Unsupported command");

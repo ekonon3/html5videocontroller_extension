@@ -14,6 +14,9 @@ function playPause(videoPlayer) {
 	}
 }
 
+function sendScriptLoaded() {
+	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
+}
 
 function seek(videoPlayer, time) {
 	videoPlayer.currentTime += time;
@@ -91,6 +94,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			return;
 		case "get-playbackrate":
 			sendPlaybackRate();
+			return;
+		case "html5videoscript-loaded":
+			sendScriptLoaded();
 			return;
 		default:
 			console.log("Invalid command");

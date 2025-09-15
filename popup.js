@@ -8,14 +8,20 @@ async function syncChange (commandType, value) {
 };
 
 chrome.runtime.onMessage.addListener(function(msg) {
-  if (msg.type === "playback-rate") {
-    console.log("Received playback rate from content script:", msg.value);
-	setPlaybackSpeedField(msg.value);
-  }
-  if (msg.type === "html5videoscript-loaded") {
-    console.log("Received script-loaded message from content script:", msg.value);
-	html5videoscriptLoaded = true;
-  }
+	switch(msg.type) {
+		case "playback-rate":
+			console.log("Received playback rate from content script:", msg.value);
+			setPlaybackSpeedField(msg.value);
+			break;
+		case "html5videoscript-loaded":
+			console.log("Received script-loaded message from content script:", msg.value);
+			html5videoscriptLoaded = true;
+			break;
+		case "mute-value":
+			console.log("Received muted value from content script:", msg.value);
+			setMuteButton(msg.value);
+		default:
+	}
 });
 
 syncChange('html5videoscript-loaded');
@@ -43,6 +49,18 @@ function setPlaybackSpeedField(value) {
 }
 
 syncChange('get-playbackrate');
+
+const mutedButton = document.getElementById('toggleMuteBtn');
+function setMuteButton(muted) {
+	console.log(muted);
+	if (muted) {
+		mutedButton.textContent = "\u{1F507}\u{fe0e}";
+	} else {
+		mutedButton.textContent = "\u{1F50A}\u{fe0e}"
+	}
+};
+
+syncChange('get-mutedvalue');
 
 const incrementTime = document.getElementById('incr');
 chrome.storage.local.get({

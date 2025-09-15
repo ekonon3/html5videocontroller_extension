@@ -123,3 +123,12 @@ select {
 	margin: 10px;
 }
 
+.space-between {
+	justify-content: space-between;
+	width: 100%;
+}
+
+.right-buttons {
+	display: flex;
+}
+

@@ -1,6 +1,7 @@
 let timeConfig = 15;
 let speedRateConfig = .25;
 let playbackSpeed = 1;
+let mutedValue = false;
 
 console.log('Loading HTML5 Video Controller extension');
 const videoPlayerCollection = document.getElementsByTagName('video');
@@ -65,6 +66,22 @@ function toggleFullScreen(videoPlayer) {
   }
 }
 
+function toggleMute(videoPlayer) {
+	if (videoPlayer.currentTime > 0) {
+		if(videoPlayer.muted) {
+			videoPlayer.muted = false;
+		} else {
+			videoPlayer.muted = true;
+		}
+		mutedValue = videoPlayer.muted;
+		sendMutedValue(mutedValue);
+	}
+}
+
+function sendMutedValue() {
+	chrome.runtime.sendMessage({ type: "mute-value", value: mutedValue });
+}
+
 function executeFunction(callback, ...args) {
 	for (v of videoPlayerCollection) {
 		if (v.duration > 0) {
@@ -95,6 +112,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		case "get-playbackrate":
 			sendPlaybackRate();
 			return;
+		case "get-mutedvalue":
+			sendMutedValue();
+			break;
 		case "html5videoscript-loaded":
 			sendScriptLoaded();
 			return;
@@ -129,10 +149,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			executeFunction(adjustPlaybackSpeed, "1x");
 			break;
 		case "togglePiPBtn":
-			executeFunction(togglePictureInPicture)
+			executeFunction(togglePictureInPicture);
 			break;
 		case "toggleFullScreenBtn":
-			executeFunction(toggleFullScreen)
+			executeFunction(toggleFullScreen);
+			break;
+		case "toggleMuteBtn":
+			executeFunction(toggleMute);
 			break;
 		default:
 			console.log("Unsupported command");

@@ -24,19 +24,25 @@
 	"commands": {
 		"fastFwdBtn": {
 			"description" : "Fast forward",
-			"suggested_key": {"default": "Alt+Shift+L"}
+			"suggested_key": {"default": "Alt+Shift+O"}
 		},
 		"rewindBtn": {
-			"description" : "Rewind",
-			"suggested_key": {"default": "Alt+Shift+K"}
+			"description" : "Rewind"
 		},
 		"fasterBtn": {
-			"description" : "Increase playback speed",
-			"suggested_key": {"default": "Alt+Shift+Period"}
+			"description" : "Increase playback speed"
 		},
 		"slowerBtn": {
-			"description" : "Decrease playback speed",
-			"suggested_key": {"default": "Alt+Shift+Comma"}
+			"description" : "Decrease playback speed"
+		},
+		"normalSpeedBtn": {
+			"description" : "Normal playback speed"
+		},
+		"toggleFullScreenBtn": {
+			"description" : "Toggle full screen"
+		},
+		"togglePiPBtn": {
+			"description" : "Toggle picture-in-picture"
 		}
     },
 	"icons": {

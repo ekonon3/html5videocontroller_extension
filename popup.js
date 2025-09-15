@@ -11,6 +11,10 @@ for (button of buttons) {
 	button.addEventListener('click', async (msg) => {
 		const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
 		if (!tab?.id) return;
+		await chrome.scripting.executeScript({
+			target: { tabId: tab.id, allFrames: true },
+			files: ["script.js"]
+		});
 		const button = msg.target.id;
 		await chrome.tabs.sendMessage(tab.id, { type: "popup-command", button });
 	})

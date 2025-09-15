@@ -22,9 +22,19 @@
 		}
 	},
 	"commands": {
+		"_execute_action": {
+			"suggested_key": {
+				"windows": "Alt+Shift+O",
+				"mac": "Alt+Shift+O",
+				"chromeos": "Alt+Shift+O",
+				"linux": "Alt+Shift+O"
+			}
+		},
+		"playBtn": {
+			"description" : "Play / pause"
+		},
 		"fastFwdBtn": {
-			"description" : "Fast forward",
-			"suggested_key": {"default": "Alt+Shift+O"}
+			"description" : "Fast forward"
 		},
 		"rewindBtn": {
 			"description" : "Rewind"

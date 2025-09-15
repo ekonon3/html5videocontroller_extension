@@ -68,10 +68,18 @@ function sendPlaybackRate() {
 }
 
 function togglePictureInPicture(videoPlayer) {
-  if (document.pictureInPictureElement) {
+  if (document.pictureInPictureElement && videoPlayer.currentTime > 0) {
     document.exitPictureInPicture();
   } else {
     videoPlayer.requestPictureInPicture();
+  }
+}
+
+function toggleFullScreen(videoPlayer) {
+  if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
+    videoPlayer.requestFullscreen();
+  } else {
+    document.exitFullscreen?.();
   }
 }
 
@@ -152,6 +160,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		case "togglePiPBtn":
 			for (v of videoPlayerCollection) {
 				togglePictureInPicture(v);
+			}
+			break;
+		case "toggleFullScreenBtn":
+			for (v of videoPlayerCollection) {
+				toggleFullScreen(v);
 			}
 			break;
 		default:

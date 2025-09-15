@@ -88,18 +88,16 @@ select {
 
 .smaller {
 	width: 110px;
-	padding: 5px;
+	padding: 7px;
 	border-radius: 8px;
 	margin: 5px;
-	margin-top: 5px;
 }
 
 .smallest {
 	width: auto;
-	padding: 10px;
+	padding: 5px 10px;
 	border-radius: 8px;
 	margin: 5px;
-	margin-top: 5px;
 }
 
 .speed {

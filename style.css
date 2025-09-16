@@ -134,7 +134,7 @@ select {
 
 .slider {
 	font-size: 10px;
-	width: auto;
+	width: 210px;
 	margin: 10px;
 	accent-color: grey;
 }

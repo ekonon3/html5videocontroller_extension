@@ -128,7 +128,21 @@ select {
 	width: 100%;
 }
 
-.right-buttons {
+.inner-container {
 	display: flex;
 }
 
+.slider {
+	font-size: 10px;
+	width: auto;
+	margin: 10px;
+	accent-color: grey;
+}
+
+.mute {
+	width: 50px;
+}
+
+.top-margin {
+	margin-top: 15px;
+}

@@ -43,9 +43,12 @@
 	<div class="container center">
 		<button class="btn smaller" id="normalSpeedBtn">normal speed</button>
 	</div>
-	<div class="container space-between">
-		<button class="btn smallest symbol" id="toggleMuteBtn" title="Mute">&#x1F50A;&#xfe0e;</button>
-		<div class="right-buttons">
+	<div class="container space-between top-margin">
+		<div class="inner-container">
+			<button class="btn smallest symbol mute" id="toggleMuteBtn" title="Mute">&#x1F50A;&#xfe0e;</button>
+			<input type="range" min="0" max="100" value="100" class="slider" id="volumeSlider">
+		</div>
+		<div class="inner-container">
 			<button class="btn smallest symbol" id="toggleFullScreenBtn" title="Full Screen">&#x26F6;</button>
 			<button class="btn smallest symbol" id="togglePiPBtn" title="PiP (Picture in Picture)">&#x25F2;</button>
 		</div>

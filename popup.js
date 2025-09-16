@@ -1,7 +1,7 @@
 const defaultIncrementTime = 15;
 let html5videoscriptLoaded = false;
 
-async function syncChange (commandType, value) {
+async function sendMsg(commandType, value) {
 	const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
 	if (!tab?.id) return;
 	await chrome.tabs.sendMessage(tab.id, { type: commandType, value });
@@ -20,15 +20,20 @@ chrome.runtime.onMessage.addListener(function(msg) {
 		case "mute-value":
 			console.log("Received muted value from content script:", msg.value);
 			setMuteButton(msg.value);
+			break;
+		case "volume-value":
+			console.log("Received volume value from content script:", msg.value);
+			setVolumeSlider(msg.value);
+			break;
 		default:
 	}
 });
 
-syncChange('html5videoscript-loaded');
+sendMsg('html5videoscript-loaded');
 
-const buttons = document.getElementsByClassName('btn');
-for (button of buttons) {
-	button.addEventListener('click', async (msg) => {
+const elements = document.querySelectorAll('button, input');
+for (element of elements) {
+	element.addEventListener('click', async (msg) => {
 		const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
 		if (!tab?.id) return;
 		if(!html5videoscriptLoaded) {
@@ -38,8 +43,11 @@ for (button of buttons) {
 			});
 			html5videoscriptLoaded = true;
 		}
-		const button = msg.target.id;
-		await chrome.tabs.sendMessage(tab.id, { type: "popup-command", button });
+
+		if(msg.target.nodeName === "BUTTON") {
+			const button = msg.target.id;
+			await chrome.tabs.sendMessage(tab.id, { type: "popup-command", button });
+		}
 	})
 };
 
@@ -47,20 +55,29 @@ const playbackSpeedField = document.getElementById('playback-speed');
 function setPlaybackSpeedField(value) {
 	playbackSpeedField.textContent = value + "x";
 }
-
-syncChange('get-playbackrate');
+sendMsg('get-playback-rate');
 
 const mutedButton = document.getElementById('toggleMuteBtn');
 function setMuteButton(muted) {
-	console.log(muted);
-	if (muted) {
+	if (muted === true) {
 		mutedButton.textContent = "\u{1F507}\u{fe0e}";
 	} else {
 		mutedButton.textContent = "\u{1F50A}\u{fe0e}"
 	}
 };
+sendMsg('get-muted-value');
 
-syncChange('get-mutedvalue');
+const volumeSlider = document.getElementById('volumeSlider');
+function setVolumeSlider(value) {
+	console.log('popup - volume value' + value);
+	volumeSlider.value = value * 100;
+}
+sendMsg('get-volume-value');
+
+volumeSlider.addEventListener('change', function() {
+	const value = volumeSlider.value;
+	sendMsg('change-volume', value);
+});
 
 const incrementTime = document.getElementById('incr');
 chrome.storage.local.get({
@@ -69,12 +86,12 @@ chrome.storage.local.get({
     async function (settings) {
 		const value = settings.incrementTime;
 		incrementTime.value = value;
-		await syncChange('change-increment', value);
+		await sendMsg('change-increment', value);
 });
 
 incrementTime.addEventListener('change', function() {
 	const value = incrementTime.value;
 	chrome.storage.local.set({ 'incrementTime': value }, async () => {
-	await syncChange('change-increment', value);
+	await sendMsg('change-increment', value);
   });
 });

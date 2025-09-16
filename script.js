@@ -2,6 +2,7 @@ let timeConfig = 15;
 let speedRateConfig = .25;
 let playbackSpeed = 1;
 let mutedValue = false;
+let volumeValue = 1.0;
 
 console.log('Loading HTML5 Video Controller extension');
 const videoPlayerCollection = document.getElementsByTagName('video');
@@ -68,7 +69,7 @@ function toggleFullScreen(videoPlayer) {
 
 function toggleMute(videoPlayer) {
 	if (videoPlayer.currentTime > 0) {
-		if(videoPlayer.muted) {
+		if (videoPlayer.muted) {
 			videoPlayer.muted = false;
 		} else {
 			videoPlayer.muted = true;
@@ -80,6 +81,20 @@ function toggleMute(videoPlayer) {
 
 function sendMutedValue() {
 	chrome.runtime.sendMessage({ type: "mute-value", value: mutedValue });
+}
+
+function setVolume(videoPlayer) {
+	if (videoPlayer.currentTime > 0) {
+		videoPlayer.volume = volumeValue;
+	}
+}
+
+function getVolumeValue(videoPlayer) {
+	volumeValue = videoPlayer.volume;
+}
+function sendVolumeValue() {
+	executeFunction(getVolumeValue);
+	chrome.runtime.sendMessage({ type: "volume-value", value: volumeValue });
 }
 
 function executeFunction(callback, ...args) {
@@ -109,12 +124,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		case "change-increment":
 			timeConfig = parseInt(msg.value);
 			return;
-		case "get-playbackrate":
+		case "change-volume":
+			volumeValue = msg.value / 100;
+			executeFunction(setVolume)
+			return;
+		case "get-playback-rate":
 			sendPlaybackRate();
 			return;
-		case "get-mutedvalue":
+		case "get-muted-value":
 			sendMutedValue();
-			break;
+			return;
+		case "get-volume-value":
+			sendVolumeValue();
+			return;
 		case "html5videoscript-loaded":
 			sendScriptLoaded();
 			return;

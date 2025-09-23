@@ -3,7 +3,7 @@ chrome.commands.onCommand.addListener(async (command) => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) return;
 	chrome.scripting.executeScript({
-			target: { tabId: tab.id, allFrames: true },
+			target: { tabId: tab.id, allFrames: false },
 			files: ["script.js"]
 		});
     await chrome.tabs.sendMessage(tab.id, { type: "command", command });

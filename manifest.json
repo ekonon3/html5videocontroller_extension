@@ -44,12 +44,6 @@
 		},
 		"toggleMuteBtn": {
 			"description" : "Toggle mute"
-		},
-		"toggleFullScreenBtn": {
-			"description" : "Toggle full screen"
-		},
-		"togglePiPBtn": {
-			"description" : "Toggle picture-in-picture"
 		}
     },
 	"icons": {

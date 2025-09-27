@@ -60,11 +60,11 @@ function togglePictureInPicture(videoPlayer) {
 }
 
 function toggleFullScreen(videoPlayer) {
-  if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
-    videoPlayer.requestFullscreen();
-  } else {
-    document.exitFullscreen?.();
-  }
+	if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
+	videoPlayer.requestFullscreen();
+	} else {
+	document.exitFullscreen?.();
+	}
 }
 
 function toggleMute(videoPlayer) {
@@ -139,6 +139,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			return;
 		case "html5videoscript-loaded":
 			sendScriptLoaded();
+			sendResponse('true');
 			return;
 		default:
 			console.log("Invalid command");

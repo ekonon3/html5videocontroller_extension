@@ -44,6 +44,9 @@
 		},
 		"toggleMuteBtn": {
 			"description" : "Toggle mute"
+		},
+		"selectVideoBtn": {
+			"description" : "Select video to control"
 		}
     },
 	"icons": {

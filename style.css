@@ -146,3 +146,8 @@ select {
 .top-margin {
 	margin-top: 15px;
 }
+
+.highlight {
+	border: 10px solid rgba(0,84,148,0.5);
+	background-color: grey;
+}

@@ -36,13 +36,10 @@ chrome.commands.onCommand.addListener(async (command) => {
 chrome.runtime.onMessage.addListener(function(msg) {
 	switch(msg.type) {
 		case "playback-rate":
-			return;
 		case "html5videoscript-loaded":
-			return;
 		case "mute-value":
-			return;
 		case "volume-value":
-			return;
+		case "selecting-video":
 		default:
 			return;
 	}

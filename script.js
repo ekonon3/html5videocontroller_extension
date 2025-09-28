@@ -4,8 +4,12 @@ let playbackSpeed = 1;
 let mutedValue = false;
 let volumeValue = 1.0;
 
-console.log('Loading HTML5 Video Controller extension');
-const videoPlayerCollection = document.getElementsByTagName('video');
+console.log('html5videocontroller - Loading HTML5 Video Controller extension');
+let videoPlayerCollection = document.getElementsByTagName('video');
+
+function sendScriptLoaded() {
+	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
+}
 
 // Functions to control video
 function playPause(videoPlayer) {
@@ -16,24 +20,20 @@ function playPause(videoPlayer) {
 	}
 }
 
-function sendScriptLoaded() {
-	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
-}
-
 function seek(videoPlayer, time) {
 	videoPlayer.currentTime += time;
-	console.log('Play position: ' + videoPlayer.currentTime);
+	console.log('html5videocontroller - Play position: ' + videoPlayer.currentTime);
 }
 
 function goToStart(videoPlayer) {
 	videoPlayer.currentTime = 0;
-	console.log('Play position: ' + videoPlayer.currentTime);
+	console.log('html5videocontroller - Play position: ' + videoPlayer.currentTime);
 }
 
 function goToEnd(videoPlayer) {
 	//videoPlayer.currentTime = videoPlayer.duration;
 	videoPlayer.currentTime += 9999;
-	console.log('Play position: ' + videoPlayer.currentTime);
+	console.log('html5videocontroller - Play position: ' + videoPlayer.currentTime);
 }
 
 function adjustPlaybackSpeed(videoPlayer, speed) {
@@ -42,7 +42,7 @@ function adjustPlaybackSpeed(videoPlayer, speed) {
 	} else {
 		videoPlayer.playbackRate += speed;
 	}
-	console.log('Playback speed: ' + videoPlayer.playbackRate + 'x');
+	console.log('html5videocontroller - Playback speed: ' + videoPlayer.playbackRate + 'x');
 	playbackSpeed = videoPlayer.playbackRate;
 	sendPlaybackRate();
 }
@@ -96,19 +96,79 @@ function sendVolumeValue() {
 	executeFunction(getVolumeValue);
 	chrome.runtime.sendMessage({ type: "volume-value", value: volumeValue });
 }
+//--------------------------------------
+
+// functions related to selecting video
+function selectVideo() {
+	chrome.runtime.sendMessage({ type: "selecting-video" });
+	const videos = document.getElementsByTagName('video');
+	for (video of videos) {
+		video.addEventListener('mouseover', this);
+		video.addEventListener('mouseout', this);
+		video.addEventListener('click', this);
+		video.addEventListener('contextmenu', this);
+	}
+}
+
+function handleEvent(event) {
+    switch (event.type) {
+		case "mouseover":
+			addHighlight(event.target);
+			break;
+		case "mouseout":
+			removeHighlight(event.target);
+			break;
+		case "click":
+		case "contextmenu":
+			videoPlayerCollection = event.target;
+			const videos = document.getElementsByTagName('video');
+			for (video of videos) {
+				video.removeEventListener('mouseover', this);
+				video.removeEventListener('mouseout', this);
+				video.removeEventListener('click', this);
+				video.removeEventListener('contextmenu', this);
+				removeHighlight(video);
+				selectedAnimation(video);
+				console.log('html5videocontroller - Video selected');
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+function addHighlight(video) {
+	video.animate([{ opacity: 1 },{ opacity: .7,},{ opacity: 1 }], {duration: 1200,iterations: Infinity,easing: 'ease-in-out'});
+}
+
+function removeHighlight(video) {
+	try {
+		video.getAnimations()[0].cancel();
+	} catch (e) {
+	}
+}
+
+function selectedAnimation(video) {
+	video.animate([{ opacity: 1 },{ opacity: .3,},{ opacity: 1 }], {duration: 800,iterations: 1,easing: 'ease-in-out'});
+}
+//--------------------------------------
 
 function executeFunction(callback, ...args) {
-	for (v of videoPlayerCollection) {
-		if (v.duration > 0) {
-			callback(v, ...args);
+	if (videoPlayerCollection instanceof HTMLCollection) {
+		for (v of videoPlayerCollection) {
+			if (v.duration > 0) {
+				callback(v, ...args);
+			}
 		}
+	} else {
+		callback(videoPlayerCollection, ...args);
 	}
 }
 
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (videoPlayerCollection.length < 1) {
-		console.log("HTML5 Video Controller extension: No videos found");
+		console.log("html5videocontroller - No videos found");
 		return;
 	}
 	
@@ -142,7 +202,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			sendResponse('true');
 			return;
 		default:
-			console.log("Invalid command");
+			console.log("html5videocontroller - Invalid command");
 			return;
 	}
 
@@ -180,8 +240,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		case "toggleMuteBtn":
 			executeFunction(toggleMute);
 			break;
+		case "selectVideoBtn":
+			selectVideo();
+			break;
 		default:
-			console.log("Unsupported command");
+			console.log("html5videocontroller - Unsupported command");
 	}
 });
 

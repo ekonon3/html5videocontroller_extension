@@ -25,6 +25,8 @@ chrome.runtime.onMessage.addListener(function(msg) {
 			console.log("Received volume value from content script:", msg.value);
 			setVolumeSlider(msg.value);
 			break;
+		case "selecting-video":
+			window.close();
 		default:
 	}
 });

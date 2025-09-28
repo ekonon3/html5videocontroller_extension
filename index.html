@@ -11,6 +11,10 @@
 		<h4 class="center">html5 video controller</h4>
 	</div>
 	<div class="container center">
+			<button class="btn smaller" id="selectVideoBtn" title=
+			"Optionally manually select a video to control (click or right click on video to select)&#x000A;&#9;&#9;Note: May not work if there is an overlay layer above the video">select video</button>
+	</div>
+	<div class="container center">
 		<button class="btn symbol-small" id="goToStartBtn">&#x23EE; start</button>
 		<button class="btn symbol-small" id="goToEndBtn">end &#x23ED;</button>
 	</div>
@@ -32,7 +36,7 @@
 			</select>
 			<label>sec</label>
 		</div>
-		<button class="btn smaller symbol" id="fastFwdBtn">&#x23E9;&#xfe0e;</button>
+		<button class="btn smaller symbol" id="fastFwdBtn" title="Fast-forward">&#x23E9;&#xfe0e;</button>
 	</div>
 	<br>
 	<div class="container center">
@@ -49,7 +53,7 @@
 			<input type="range" min="0" max="100" value="100" class="slider" id="volumeSlider">
 		</div>
 		<div class="inner-container">
-			<button class="btn smallest symbol" id="toggleFullScreenBtn" title="Full Screen">&#x26F6;</button>
+			<button class="btn smallest symbol" id="toggleFullScreenBtn" title="Full screen">&#x26F6;</button>
 			<button class="btn smallest symbol" id="togglePiPBtn" title="PiP (Picture in Picture)">&#x25F2;</button>
 		</div>
 	</div>

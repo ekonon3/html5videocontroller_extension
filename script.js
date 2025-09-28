@@ -128,9 +128,10 @@ function handleEvent(event) {
 				video.removeEventListener('click', this);
 				video.removeEventListener('contextmenu', this);
 				removeHighlight(video);
-				selectedAnimation(video);
-				console.log('html5videocontroller - Video selected');
 			}
+			selectedAnimation(event.target);
+			console.log('html5videocontroller - Video selected');
+			
 			break;
 		default:
 			break;

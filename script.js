@@ -138,7 +138,7 @@ function handleEvent(event) {
 }
 
 function addHighlight(video) {
-	video.animate([{ opacity: 1 },{ opacity: .7,},{ opacity: 1 }], {duration: 1200,iterations: Infinity,easing: 'ease-in-out'});
+	video.animate([{ opacity: 1 },{ opacity: .5,},{ opacity: 1 }], {duration: 2000,iterations: Infinity,easing: 'ease-in-out'});
 }
 
 function removeHighlight(video) {

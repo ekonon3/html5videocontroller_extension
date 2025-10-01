@@ -213,7 +213,8 @@ function executeFunction(callback, ...args) {
 
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-	if (videoPlayerCollection.length < 1
+	if (videoPlayerCollection.length < 1 
+		&& msg.command != 'selectVideoBtn' && msg.button != 'selectVideoBtn'
 		&& msg.command != 'html5videoscript-loaded' && msg.button != 'html5videoscript-loaded'
 		&& msg.command != 'change-increment' && msg.button != 'change-increment') {
 		console.log("html5videocontroller - No videos found");

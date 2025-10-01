@@ -5,7 +5,31 @@ let mutedValue = false;
 let volumeValue = 1.0;
 
 console.log('html5videocontroller - Loading HTML5 Video Controller extension');
-let videoPlayerCollection = document.getElementsByTagName('video');
+
+// Get videos
+function findVideoInShadowRootsByTagName() {
+  const allElements = document.querySelectorAll('*');
+  const foundElements = [];
+
+  for (const element of allElements) {
+    if (element.shadowRoot) {
+      const shadowRoot = element.shadowRoot;
+      const elementsInShadow = shadowRoot.querySelectorAll('video');
+      foundElements.push(...elementsInShadow);
+    }
+  }
+  return foundElements;
+}
+
+function getVideos() {
+	let videos = document.getElementsByTagName('video');
+	if (videos.length === 0) {
+		videos = findVideoInShadowRootsByTagName();
+	}
+	return videos;
+}
+
+let videoPlayerCollection = getVideos();
 
 function sendScriptLoaded() {
 	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
@@ -99,10 +123,32 @@ function sendVolumeValue() {
 //--------------------------------------
 
 // functions related to selecting video
+function findVideoInShadowRootsByTagName() {
+  const allElements = document.querySelectorAll('*');
+  const foundElements = [];
+
+  for (const element of allElements) {
+    if (element.shadowRoot) {
+      const shadowRoot = element.shadowRoot;
+      const elementsInShadow = shadowRoot.querySelectorAll('video');
+      foundElements.push(...elementsInShadow);
+    }
+  }
+  return foundElements;
+}
+
+function getVideos() {
+	let videos = document.getElementsByTagName('video');
+	if (videos.length === 0) {
+		videos = findVideoInShadowRootsByTagName();
+	}
+	return videos;
+}
+
 function selectVideo() {
 	chrome.runtime.sendMessage({ type: "selecting-video" });
-	const videos = document.getElementsByTagName('video');
-	for (video of videos) {
+	videoPlayerCollection = getVideos();
+	for (video of videoPlayerCollection) {
 		video.addEventListener('mouseover', this);
 		video.addEventListener('mouseout', this);
 		video.addEventListener('click', this);
@@ -120,15 +166,14 @@ function handleEvent(event) {
 			break;
 		case "click":
 		case "contextmenu":
-			videoPlayerCollection = event.target;
-			const videos = document.getElementsByTagName('video');
-			for (video of videos) {
+			for (video of videoPlayerCollection) {
 				video.removeEventListener('mouseover', this);
 				video.removeEventListener('mouseout', this);
 				video.removeEventListener('click', this);
 				video.removeEventListener('contextmenu', this);
 				removeHighlight(video);
 			}
+			videoPlayerCollection = event.target;
 			selectedAnimation(event.target);
 			console.log('html5videocontroller - Video selected');
 			
@@ -155,7 +200,7 @@ function selectedAnimation(video) {
 //--------------------------------------
 
 function executeFunction(callback, ...args) {
-	if (videoPlayerCollection instanceof HTMLCollection) {
+	if ((videoPlayerCollection instanceof HTMLCollection) || (videoPlayerCollection instanceof Array)) {
 		for (v of videoPlayerCollection) {
 			if (v.duration > 0) {
 				callback(v, ...args);
@@ -168,7 +213,10 @@ function executeFunction(callback, ...args) {
 
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-	if (videoPlayerCollection.length < 1) {
+	if (videoPlayerCollection.length < 1 
+		&& msg.command != 'selectVideoBtn' && msg.button != 'selectVideoBtn'
+		&& msg.command != 'html5videoscript-loaded' && msg.button != 'html5videoscript-loaded'
+		&& msg.command != 'change-increment' && msg.button != 'change-increment') {
 		console.log("html5videocontroller - No videos found");
 		return;
 	}

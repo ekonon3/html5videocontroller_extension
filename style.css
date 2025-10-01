@@ -151,3 +151,13 @@ select {
 	border: 10px solid rgba(0,84,148,0.5);
 	background-color: grey;
 }
+
+
+
+.cancel {
+	background-color: red; 
+  
+.cancel-fade {
+	background-color: transparent; 
+	transition: background-color 4s ease-in-out;
+}

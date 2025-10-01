@@ -27,6 +27,15 @@ chrome.runtime.onMessage.addListener(function(msg) {
 			break;
 		case "selecting-video":
 			window.close();
+		case "html5videoscript-function-cancel":
+			switch (msg.value) {
+				case "togglePictureInPicture":
+					const pipButton = document.getElementById('togglePiPBtn');
+					pipButton.classList.add('cancel-fade');
+					pipButton.classList.add('cancel');
+					setTimeout(() => { pipButton.classList.remove('cancel') }, 500);
+					setTimeout(() => { pipButton.classList.remove('cancel-fade') }, 4000);
+			}
 		default:
 	}
 });

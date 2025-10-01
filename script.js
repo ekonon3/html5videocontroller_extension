@@ -35,6 +35,10 @@ function sendScriptLoaded() {
 	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
 }
 
+function functionCancelled(func) {
+	chrome.runtime.sendMessage({ type: "html5videoscript-function-cancel", value: func });
+}
+
 // Functions to control video
 function playPause(videoPlayer) {
 	if(videoPlayer.paused) {
@@ -76,18 +80,23 @@ function sendPlaybackRate() {
 }
 
 function togglePictureInPicture(videoPlayer) {
-  if (document.pictureInPictureElement && videoPlayer.currentTime > 0) {
-    document.exitPictureInPicture();
-  } else {
-    videoPlayer.requestPictureInPicture();
-  }
+	if (document.pictureInPictureElement && videoPlayer.currentTime > 0) {
+		document.exitPictureInPicture();
+	} else {
+		if (videoPlayer.disablePictureInPicture) {
+			functionCancelled('togglePictureInPicture');
+			console.log('html5videocontroller - Picture in Picture is disabled by site');
+			return;
+		}
+		videoPlayer.requestPictureInPicture();
+	}
 }
 
 function toggleFullScreen(videoPlayer) {
 	if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
-	videoPlayer.requestFullscreen();
+		videoPlayer.requestFullscreen();
 	} else {
-	document.exitFullscreen?.();
+		document.exitFullscreen?.();
 	}
 }
 
@@ -145,14 +154,36 @@ function getVideos() {
 	return videos;
 }
 
+let timeoutArray = [];
+function cancelTimeouts() {
+	timeoutArray.forEach( (timeout) => {
+		clearTimeout(timeout);
+	})
+	timeoutArray = [];
+}
+
+function removeSelectListeners(video) {
+	video.removeEventListener('mouseover', this);
+	video.removeEventListener('mouseout', this);
+	video.removeEventListener('click', this);
+	video.removeEventListener('contextmenu', this);
+	removeHighlight(video);
+}
+
+
 function selectVideo() {
 	chrome.runtime.sendMessage({ type: "selecting-video" });
+	if(timeoutArray.length > 0) {
+		cancelTimeouts();
+	}
 	videoPlayerCollection = getVideos();
 	for (video of videoPlayerCollection) {
 		video.addEventListener('mouseover', this);
 		video.addEventListener('mouseout', this);
 		video.addEventListener('click', this);
 		video.addEventListener('contextmenu', this);
+		const timer = setTimeout(removeSelectListeners, 30000, video);
+		timeoutArray.push(timer);
 	}
 }
 
@@ -167,16 +198,12 @@ function handleEvent(event) {
 		case "click":
 		case "contextmenu":
 			for (video of videoPlayerCollection) {
-				video.removeEventListener('mouseover', this);
-				video.removeEventListener('mouseout', this);
-				video.removeEventListener('click', this);
-				video.removeEventListener('contextmenu', this);
-				removeHighlight(video);
+				removeSelectListeners(video);
 			}
 			videoPlayerCollection = event.target;
 			selectedAnimation(event.target);
 			console.log('html5videocontroller - Video selected');
-			
+			cancelTimeouts();
 			break;
 		default:
 			break;

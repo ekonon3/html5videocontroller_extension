@@ -147,17 +147,24 @@ select {
 	margin-top: 15px;
 }
 
-.highlight {
-	border: 10px solid rgba(0,84,148,0.5);
-	background-color: grey;
+.selecting {
+	background-color: rgba(0,84,148,0.8); 
 }
 
+.selected {
+	background-color: green; 
+}
 
+.selected-fade {
+	background-color: transparent; 
+	transition: background-color 3s ease-in-out;
+}
 
 .cancel {
-	background-color: red; 
-  
+	background-color: red;
+}
+
 .cancel-fade {
 	background-color: transparent; 
-	transition: background-color 4s ease-in-out;
+	transition: background-color 3s ease-in-out;
 }

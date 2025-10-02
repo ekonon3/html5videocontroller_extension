@@ -29,13 +29,18 @@ function getVideos() {
 	return videos;
 }
 
-function filterVideos(videos) {
-	let videosFiltered = [];
+function videosPlaying(videos) {
+	let currentlyPlaying = [];
 	for (video of videos) {
 		if (video.paused === false) {
-			videosFiltered.push(video);
+			currentlyPlaying.push(video);
 		}
 	}
+	return currentlyPlaying;
+}
+
+function filterVideos(videos) {
+	let videosFiltered = videosPlaying(videos);
 	if (videosFiltered.length < 1) {
 		videosFiltered = videos;
 	}
@@ -49,8 +54,8 @@ function sendScriptLoaded() {
 	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
 }
 
-function functionCancelled(func) {
-	chrome.runtime.sendMessage({ type: "html5videoscript-function-cancel", value: func });
+function functionCancelled(button) {
+	chrome.runtime.sendMessage({ type: "html5videoscript-function-cancel", value: button });
 }
 
 // Functions to control video
@@ -98,17 +103,29 @@ function togglePictureInPicture(videoPlayer) {
 		document.exitPictureInPicture();
 	} else {
 		if (videoPlayer.disablePictureInPicture) {
-			functionCancelled('togglePictureInPicture');
+			functionCancelled('togglePiPBtn');
 			console.log('html5videocontroller - Picture in Picture is disabled by site');
 			return;
 		}
-		videoPlayer.requestPictureInPicture();
+		videoPlayer.requestPictureInPicture().then(() => {
+        console.log('html5videocontroller - Picture-in-picture enabled');
+		})
+		.catch((error) => {
+        console.log('html5videocontroller - Error entering picture-in-picture: ', error);
+		functionCancelled('togglePiPBtn');
+		});
 	}
 }
 
 function toggleFullScreen(videoPlayer) {
 	if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
-		videoPlayer.requestFullscreen();
+		videoPlayer.requestFullscreen().then(() => {
+        console.log('html5videocontroller - Full screen enabled');
+		})
+		.catch((error) => {
+        console.log('html5videocontroller - Error entering full screen: ', error);
+		functionCancelled('toggleFullScreenBtn');
+		});
 	} else {
 		document.exitFullscreen?.();
 	}
@@ -166,8 +183,7 @@ function removeSelectListeners(video) {
 
 
 function selectVideo() {
-	// used for closing popup menu when selecting video; commented out as popup menu may be useful
-	//chrome.runtime.sendMessage({ type: "selecting-video" });
+	chrome.runtime.sendMessage({ type: "selecting-video" });
 	if(timeoutArray.length > 0) {
 		cancelTimeouts();
 	}
@@ -189,9 +205,9 @@ function selection() {
 	if (hoveredVideo !== null) {
 		filteredVideos = hoveredVideo;
 		selectedAnimation(hoveredVideo);
+		chrome.runtime.sendMessage({ type: "selected-video" });
 		console.log('html5videocontroller - Video selected');
 	}
-	console.log(hoveredVideo);
 	timeoutArray = [];
 }
 
@@ -205,18 +221,6 @@ function handleEvent(event) {
 			removeHighlight(event.target);
 			hoveredVideo = null;
 			break;
-		/*
-		case "click":
-		case "contextmenu":
-			for (video of allVideos) {
-				removeSelectListeners(video);
-			}
-			filteredVideos = event.target;
-			selectedAnimation(event.target);
-			console.log('html5videocontroller - Video selected');
-			cancelTimeouts();
-			break;
-		*/
 		default:
 			break;
 	}
@@ -252,6 +256,14 @@ function executeFunction(callback, ...args) {
 
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+	if ((filteredVideos instanceof HTMLCollection) || (filteredVideos instanceof Array)) {
+		let currentlyPlaying = videosPlaying(filteredVideos);
+		if (currentlyPlaying.length < 1) {
+			currentlyPlaying = videosPlaying(getVideos());
+			currentlyPlaying.length > 0 ? filteredVideos = currentlyPlaying : null;
+		}
+	}
+	
 	if (filteredVideos.length < 1 
 		&& msg.command != 'selectVideoBtn' && msg.button != 'selectVideoBtn'
 		&& msg.command != 'html5videoscript-loaded' && msg.button != 'html5videoscript-loaded'

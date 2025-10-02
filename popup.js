@@ -26,18 +26,24 @@ chrome.runtime.onMessage.addListener(function(msg) {
 			setVolumeSlider(msg.value);
 			break;
 		case "selecting-video":
-			window.close();
+			const selecting = document.getElementById('selectVideoBtn');
+			selecting.classList.add('selecting');
+			setTimeout(() => { selecting.classList.remove('selecting') }, 2000);
+			break;
+		case "selected-video":
+			const selected = document.getElementById('selectVideoBtn');
+			selected.classList.add('selected');
+			setTimeout(() => { selected.classList.replace('selected', 'selected-fade') }, 500);
+			setTimeout(() => { selected.classList.remove('selected-fade') }, 3000);
 			break;
 		case "html5videoscript-function-cancel":
-			switch (msg.value) {
-				case "togglePictureInPicture":
-					const pipButton = document.getElementById('togglePiPBtn');
-					pipButton.classList.add('cancel-fade');
-					pipButton.classList.add('cancel');
-					setTimeout(() => { pipButton.classList.remove('cancel') }, 500);
-					setTimeout(() => { pipButton.classList.remove('cancel-fade') }, 4000);
-			}
+			const element = document.getElementById(msg.value);
+			element.classList.add('cancel');
+			setTimeout(() => { element.classList.replace('cancel', 'cancel-fade') }, 500);
+			setTimeout(() => { element.classList.remove('cancel-fade') }, 3000);
+			break;
 		default:
+			break;
 	}
 });
 
@@ -81,7 +87,6 @@ sendMsg('get-muted-value');
 
 const volumeSlider = document.getElementById('volumeSlider');
 function setVolumeSlider(value) {
-	console.log('popup - volume value' + value);
 	volumeSlider.value = value * 100;
 }
 sendMsg('get-volume-value');

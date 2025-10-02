@@ -182,7 +182,7 @@ function selectVideo() {
 		video.addEventListener('mouseout', this);
 		video.addEventListener('click', this);
 		video.addEventListener('contextmenu', this);
-		const timer = setTimeout(removeSelectListeners, 15000, video);
+		const timer = setTimeout(removeSelectListeners, 10000, video);
 		timeoutArray.push(timer);
 	}
 }

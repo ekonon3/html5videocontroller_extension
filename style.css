@@ -157,7 +157,7 @@ select {
 
 .selected-fade {
 	background-color: transparent; 
-	transition: background-color 3s ease-in-out;
+	transition: background-color 2s ease-in-out;
 }
 
 .cancel {
@@ -166,5 +166,5 @@ select {
 
 .cancel-fade {
 	background-color: transparent; 
-	transition: background-color 3s ease-in-out;
+	transition: background-color 2s ease-in-out;
 }

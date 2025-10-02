@@ -120,14 +120,20 @@ function togglePictureInPicture(videoPlayer) {
 function toggleFullScreen(videoPlayer) {
 	if (!document.fullscreenElement && videoPlayer.currentTime > 0) {
 		videoPlayer.requestFullscreen().then(() => {
-        console.log('html5videocontroller - Full screen enabled');
+        console.log('html5videocontroller - Entered full screen');
 		})
 		.catch((error) => {
-        console.log('html5videocontroller - Error entering full screen: ', error);
+        console.log('html5videocontroller - Error for full screen: ', error);
 		functionCancelled('toggleFullScreenBtn');
 		});
 	} else {
-		document.exitFullscreen?.();
+		document.exitFullscreen?.().then(() => {
+        console.log('html5videocontroller - Exited full screen');
+		})
+		.catch((error) => {
+        console.log('html5videocontroller - Error for full screen: ', error);
+		functionCancelled('toggleFullScreenBtn');
+		});
 	}
 }
 
@@ -209,6 +215,7 @@ function selection() {
 		console.log('html5videocontroller - Video selected');
 	}
 	timeoutArray = [];
+	hoveredVideo = null;
 }
 
 function handleEvent(event) {

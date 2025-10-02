@@ -34,13 +34,13 @@ chrome.runtime.onMessage.addListener(function(msg) {
 			const selected = document.getElementById('selectVideoBtn');
 			selected.classList.add('selected');
 			setTimeout(() => { selected.classList.replace('selected', 'selected-fade') }, 500);
-			setTimeout(() => { selected.classList.remove('selected-fade') }, 3000);
+			setTimeout(() => { selected.classList.remove('selected-fade') }, 2000);
 			break;
 		case "html5videoscript-function-cancel":
 			const element = document.getElementById(msg.value);
 			element.classList.add('cancel');
 			setTimeout(() => { element.classList.replace('cancel', 'cancel-fade') }, 500);
-			setTimeout(() => { element.classList.remove('cancel-fade') }, 3000);
+			setTimeout(() => { element.classList.remove('cancel-fade') }, 2000);
 			break;
 		default:
 			break;

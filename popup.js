@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(function(msg) {
 			break;
 		case "selecting-video":
 			window.close();
+			break;
 		case "html5videoscript-function-cancel":
 			switch (msg.value) {
 				case "togglePictureInPicture":

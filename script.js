@@ -29,7 +29,21 @@ function getVideos() {
 	return videos;
 }
 
-let videoPlayerCollection = getVideos();
+function filterVideos(videos) {
+	let videosFiltered = [];
+	for (video of videos) {
+		if (video.paused === false) {
+			videosFiltered.push(video);
+		}
+	}
+	if (videosFiltered.length < 1) {
+		videosFiltered = videos;
+	}
+	return videosFiltered;
+}
+
+let allVideos = getVideos();
+let filteredVideos = filterVideos(allVideos);
 
 function sendScriptLoaded() {
 	chrome.runtime.sendMessage({ type: "html5videoscript-loaded", value: "true" });
@@ -132,29 +146,9 @@ function sendVolumeValue() {
 //--------------------------------------
 
 // functions related to selecting video
-function findVideoInShadowRootsByTagName() {
-  const allElements = document.querySelectorAll('*');
-  const foundElements = [];
-
-  for (const element of allElements) {
-    if (element.shadowRoot) {
-      const shadowRoot = element.shadowRoot;
-      const elementsInShadow = shadowRoot.querySelectorAll('video');
-      foundElements.push(...elementsInShadow);
-    }
-  }
-  return foundElements;
-}
-
-function getVideos() {
-	let videos = document.getElementsByTagName('video');
-	if (videos.length === 0) {
-		videos = findVideoInShadowRootsByTagName();
-	}
-	return videos;
-}
-
 let timeoutArray = [];
+let hoveredVideo = null;
+
 function cancelTimeouts() {
 	timeoutArray.forEach( (timeout) => {
 		clearTimeout(timeout);
@@ -172,39 +166,57 @@ function removeSelectListeners(video) {
 
 
 function selectVideo() {
-	chrome.runtime.sendMessage({ type: "selecting-video" });
+	// used for closing popup menu when selecting video; commented out as popup menu may be useful
+	//chrome.runtime.sendMessage({ type: "selecting-video" });
 	if(timeoutArray.length > 0) {
 		cancelTimeouts();
 	}
-	videoPlayerCollection = getVideos();
-	for (video of videoPlayerCollection) {
+	
+	allVideos = getVideos();
+	for (video of allVideos) {
 		video.addEventListener('mouseover', this);
 		video.addEventListener('mouseout', this);
 		video.addEventListener('click', this);
 		video.addEventListener('contextmenu', this);
-		const timer = setTimeout(removeSelectListeners, 10000, video);
+		const timer = setTimeout(removeSelectListeners, 5000, video);
 		timeoutArray.push(timer);
 	}
+	const selectionTimer = setTimeout(selection, 5000);
+	filteredVideos = filterVideos(allVideos);
+}
+
+function selection() {
+	if (hoveredVideo !== null) {
+		filteredVideos = hoveredVideo;
+		selectedAnimation(hoveredVideo);
+		console.log('html5videocontroller - Video selected');
+	}
+	console.log(hoveredVideo);
+	timeoutArray = [];
 }
 
 function handleEvent(event) {
     switch (event.type) {
 		case "mouseover":
 			addHighlight(event.target);
+			hoveredVideo = event.target;
 			break;
 		case "mouseout":
 			removeHighlight(event.target);
+			hoveredVideo = null;
 			break;
+		/*
 		case "click":
 		case "contextmenu":
-			for (video of videoPlayerCollection) {
+			for (video of allVideos) {
 				removeSelectListeners(video);
 			}
-			videoPlayerCollection = event.target;
+			filteredVideos = event.target;
 			selectedAnimation(event.target);
 			console.log('html5videocontroller - Video selected');
 			cancelTimeouts();
 			break;
+		*/
 		default:
 			break;
 	}
@@ -227,20 +239,20 @@ function selectedAnimation(video) {
 //--------------------------------------
 
 function executeFunction(callback, ...args) {
-	if ((videoPlayerCollection instanceof HTMLCollection) || (videoPlayerCollection instanceof Array)) {
-		for (v of videoPlayerCollection) {
+	if ((filteredVideos instanceof HTMLCollection) || (filteredVideos instanceof Array)) {
+		for (v of filteredVideos) {
 			if (v.duration > 0) {
 				callback(v, ...args);
 			}
 		}
 	} else {
-		callback(videoPlayerCollection, ...args);
+		callback(filteredVideos, ...args);
 	}
 }
 
 // Handle messages and commands
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-	if (videoPlayerCollection.length < 1 
+	if (filteredVideos.length < 1 
 		&& msg.command != 'selectVideoBtn' && msg.button != 'selectVideoBtn'
 		&& msg.command != 'html5videoscript-loaded' && msg.button != 'html5videoscript-loaded'
 		&& msg.command != 'change-increment' && msg.button != 'change-increment') {

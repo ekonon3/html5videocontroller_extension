@@ -275,8 +275,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		&& msg.command != 'selectVideoBtn' && msg.button != 'selectVideoBtn'
 		&& msg.command != 'html5videoscript-loaded' && msg.button != 'html5videoscript-loaded'
 		&& msg.command != 'change-increment' && msg.button != 'change-increment') {
-		console.log("html5videocontroller - No videos found");
-		return;
+			if (msg.button)
+			{
+				functionCancelled(msg.button);
+			}
+			console.log("html5videocontroller - No videos found");
+			return;
 	}
 	
 	let command = null;

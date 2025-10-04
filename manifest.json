@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "HTML5 Video Controller",
-    "description": "Control playback of HTML5 video (speed, playback, full screen, picture in picture)",
+    "description": "Control playback of HTML5 video (speed, playback, volume, full screen, picture in picture)",
     "version": "1.0",
 	"permissions": ["activeTab", "scripting", "storage"],
 	"background": {

@@ -103,10 +103,8 @@ function togglePictureInPicture(videoPlayer) {
 		document.exitPictureInPicture();
 	} else {
 		if (videoPlayer.disablePictureInPicture) {
-			functionCancelled('togglePiPBtn');
-			console.log('html5videocontroller - Picture-in-picture is disabled by site');
-			return;
-		}
+			videoPlayer.disablePictureInPicture = false;
+			}
 		videoPlayer.requestPictureInPicture().then(() => {
         console.log('html5videocontroller - Picture-in-picture enabled');
 		})
